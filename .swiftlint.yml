@@ -1,0 +1,32 @@
+disabled_rules:
+  - trailing_whitespace
+  - todo
+  - line_length
+
+opt_in_rules:
+  - empty_count
+  - explicit_init
+  - first_where
+  - force_unwrapping
+  - implicitly_unwrapped_optional
+  - prefer_self_type_over_type_of_self
+  - redundant_nil_coalescing
+  - sorted_first_last
+  - toggle_bool
+
+excluded:
+  - .build
+  - DerivedData
+  - build
+  - Tests/Generated
+
+identifier_name:
+  min_length: 2
+  excluded:
+    - id
+    - n
+    - v
+    - x
+    - y
+
+reporter: "xcode"

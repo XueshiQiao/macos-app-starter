@@ -1,0 +1,24 @@
+{
+  "sourceLanguage" : "en",
+  "version" : "1.0",
+  "strings" : {
+    "CFBundleDisplayName" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "MacOSAppStarter" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "MacOSAppStarter" } }
+      }
+    },
+    "CFBundleName" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "MacOSAppStarter" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "MacOSAppStarter" } }
+      }
+    },
+    "NSAppleEventsUsageDescription" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "MacOSAppStarter needs Apple Events to demonstrate Accessibility integration." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "MacOSAppStarter 需要 Apple Events 以演示辅助功能集成。" } }
+      }
+    }
+  }
+}

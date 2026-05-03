@@ -1,0 +1,82 @@
+name: MacOSAppStarter
+options:
+  bundleIdPrefix: dev.xueshi
+  deploymentTarget:
+    macOS: "14.0"
+  developmentLanguage: en
+  knownRegions:
+    - en
+    - zh-Hans
+    - Base
+
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    MACOSX_DEPLOYMENT_TARGET: "14.0"
+    GENERATE_INFOPLIST_FILE: YES
+    LOCALIZATION_PREFERS_STRING_CATALOGS: YES
+    SWIFT_EMIT_LOC_STRINGS: YES
+    DEVELOPMENT_LANGUAGE: en
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    CODE_SIGN_STYLE: Automatic
+    DEVELOPMENT_TEAM: ""
+    ENABLE_HARDENED_RUNTIME: YES
+    INFOPLIST_KEY_LSUIElement: NO
+    INFOPLIST_KEY_NSHumanReadableCopyright: "Copyright © 2026 Xueshi Qiao. All rights reserved."
+    INFOPLIST_KEY_CFBundleDisplayName: "$(CFBundleDisplayName)"
+    INFOPLIST_KEY_NSAppleEventsUsageDescription: "MacOSAppStarter needs Apple Events to demonstrate Accessibility integration."
+
+packages:
+  Sparkle:
+    url: https://github.com/sparkle-project/Sparkle
+    from: "2.6.0"
+  KeyboardShortcuts:
+    url: https://github.com/sindresorhus/KeyboardShortcuts
+    from: "2.2.0"
+  Aptabase:
+    url: https://github.com/aptabase/aptabase-swift
+    from: "0.3.0"
+
+targets:
+  MacOSAppStarter:
+    type: application
+    platform: macOS
+    deploymentTarget: "14.0"
+    sources:
+      - path: MacOSAppStarter/Sources
+      - path: MacOSAppStarter/Assets.xcassets
+      - path: MacOSAppStarter/Resources
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: dev.xueshi.macos-app-starter
+        PRODUCT_NAME: MacOSAppStarter
+        CODE_SIGN_ENTITLEMENTS: MacOSAppStarter/Resources/MacOSAppStarter.entitlements
+    dependencies:
+      - package: Sparkle
+      - package: KeyboardShortcuts
+      - package: Aptabase
+
+  MacOSAppStarterTests:
+    type: bundle.unit-test
+    platform: macOS
+    deploymentTarget: "14.0"
+    sources:
+      - path: MacOSAppStarterTests
+    dependencies:
+      - target: MacOSAppStarter
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: dev.xueshi.macos-app-starter.tests
+        BUNDLE_LOADER: "$(TEST_HOST)"
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/MacOSAppStarter.app/Contents/MacOS/MacOSAppStarter"
+
+schemes:
+  MacOSAppStarter:
+    build:
+      targets:
+        MacOSAppStarter: all
+        MacOSAppStarterTests: [test]
+    test:
+      targets:
+        - MacOSAppStarterTests

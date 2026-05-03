@@ -1,0 +1,257 @@
+{
+  "sourceLanguage" : "en",
+  "version" : "1.0",
+  "strings" : {
+    "%lld items" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : { "stringUnit" : { "state" : "translated", "value" : "%lld item" } },
+              "other" : { "stringUnit" : { "state" : "translated", "value" : "%lld items" } }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : { "state" : "translated", "value" : "%lld 个项目" }
+        }
+      }
+    },
+    "A scaffold for production macOS apps" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "A scaffold for production macOS apps" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "生产级 macOS 应用脚手架" } }
+      }
+    },
+    "About" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "About" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "关于" } }
+      }
+    },
+    "Accessibility" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Accessibility" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "辅助功能" } }
+      }
+    },
+    "All set" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "All set" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "全部就绪" } }
+      }
+    },
+    "Back" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Back" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "返回" } }
+      }
+    },
+    "Bundle ID" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Bundle ID" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "Bundle ID" } }
+      }
+    },
+    "Check for Updates Now" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Check for Updates Now" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "立即检查更新" } }
+      }
+    },
+    "Check for Updates…" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Check for Updates…" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "检查更新…" } }
+      }
+    },
+    "Check for updates automatically" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Check for updates automatically" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "自动检查更新" } }
+      }
+    },
+    "Continue" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Continue" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "继续" } }
+      }
+    },
+    "Done" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Done" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "完成" } }
+      }
+    },
+    "Find the app in your menu bar and try the hotkey from Settings → Shortcuts." : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Find the app in your menu bar and try the hotkey from Settings → Shortcuts." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "应用图标已在菜单栏，可在「设置 → 快捷键」中试用全局快捷键。" } }
+      }
+    },
+    "Follow System" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Follow System" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "跟随系统" } }
+      }
+    },
+    "General" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "General" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "通用" } }
+      }
+    },
+    "Granted" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Granted" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "已授权" } }
+      }
+    },
+    "Language" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Language" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "语言" } }
+      }
+    },
+    "Launch at Login" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Launch at Login" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "登录时启动" } }
+      }
+    },
+    "MacOSAppStarter" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "MacOSAppStarter" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "MacOSAppStarter" } }
+      }
+    },
+    "MacOSAppStarter shows a sample Accessibility prompt. Real apps using global hotkeys or window inspection need this." : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "MacOSAppStarter shows a sample Accessibility prompt. Real apps using global hotkeys or window inspection need this." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "MacOSAppStarter 展示了一个辅助功能授权示例。需要全局快捷键或窗口检查的应用必须申请此权限。" } }
+      }
+    },
+    "Menu bar quick actions" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Menu bar quick actions" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "菜单栏快捷操作" } }
+      }
+    },
+    "Not Granted" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Not Granted" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "未授权" } }
+      }
+    },
+    "Open Accessibility Preferences" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Open Accessibility Preferences" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "打开辅助功能设置" } }
+      }
+    },
+    "Open Main Window" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Open Main Window" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "打开主窗口" } }
+      }
+    },
+    "Open Settings…" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Open Settings…" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "打开设置…" } }
+      }
+    },
+    "Pick a language" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Pick a language" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "选择语言" } }
+      }
+    },
+    "Quit" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Quit" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "退出" } }
+      }
+    },
+    "Request Accessibility" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Request Accessibility" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "申请辅助功能" } }
+      }
+    },
+    "Send anonymous usage statistics" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Send anonymous usage statistics" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "发送匿名使用数据" } }
+      }
+    },
+    "Settings" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Settings" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "设置" } }
+      }
+    },
+    "Settings…" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Settings…" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "设置…" } }
+      }
+    },
+    "Shortcuts" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Shortcuts" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "快捷键" } }
+      }
+    },
+    "Status" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Status" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "状态" } }
+      }
+    },
+    "Toggle Main Window" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Toggle Main Window" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "切换主窗口" } }
+      }
+    },
+    "Updates" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Updates" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "更新" } }
+      }
+    },
+    "Version" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Version" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "版本" } }
+      }
+    },
+    "View on GitHub" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "View on GitHub" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "在 GitHub 上查看" } }
+      }
+    },
+    "Welcome to MacOSAppStarter" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Welcome to MacOSAppStarter" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "欢迎使用 MacOSAppStarter" } }
+      }
+    },
+    "You can change this later in Settings." : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "You can change this later in Settings." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "你可以稍后在设置中更改。" } }
+      }
+    },
+    "A short tour of what's included." : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "A short tour of what's included." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "简要了解其中包含的功能。" } }
+      }
+    }
+  }
+}
