@@ -1,20 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-  Stub appcast for MacOSAppStarter.
-
-  Empty channel = "no updates available". Sparkle parses this cleanly and
-  reports "You're up to date" instead of surfacing a 404 network error.
-
-  CI overwrites this file on every tagged release (see .github/workflows/build.yml,
-  the "Sign DMG and generate appcast" + "Commit appcast.xml to main" steps).
-  Do not edit by hand once you start tagging releases — your edits will be
-  overwritten. Pre-release, this stub is what users see when they Check for Updates.
--->
 <rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle">
   <channel>
     <title>MacOSAppStarter Updates</title>
     <link>https://github.com/XueshiQiao/macos-app-starter</link>
-    <description>Sparkle update feed for MacOSAppStarter. Currently no releases — CI populates this on the first tagged release.</description>
+    <description>Most recent updates to MacOSAppStarter</description>
     <language>en</language>
+    <item>
+      <title>Version 0.1.0</title>
+      <pubDate>Mon, 04 May 2026 04:32:37 +0000</pubDate>
+      <sparkle:version>1</sparkle:version>
+      <sparkle:shortVersionString>0.1.0</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+      <enclosure url="https://github.com/XueshiQiao/macos-app-starter/releases/download/v0.1.0/MacOSAppStarter.dmg" length="1550606" type="application/octet-stream" sparkle:edSignature="5B+evnnxkZYZ1FXmCQ04RIaNOZs1ro09e/hMrbWudMQVZJ55hoWTOSBqIigIRc9xlPKw4W8vQWZgO5IjeIS1AA==" />
+    </item>
   </channel>
 </rss>
