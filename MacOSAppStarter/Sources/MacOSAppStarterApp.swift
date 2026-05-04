@@ -9,7 +9,12 @@ struct MacOSAppStarterApp: App {
 
     init() {
         FileLog.shared.info("App started. version=\(AppInfo.versionString)")
+        // app_name + bundle_id let us filter the maintainer's own template app
+        // (bundle_id == "dev.xueshi.macos-app-starter") apart from forks that
+        // forgot to replace APTABASE_KEY in project.yml.
         Analytics.shared.track("app_started", properties: [
+            "app_name": AppInfo.displayName,
+            "bundle_id": AppInfo.bundleID,
             "version": AppInfo.versionString
         ])
     }
@@ -50,5 +55,13 @@ enum AppInfo {
 
     static var bundleID: String {
         Bundle.main.bundleIdentifier ?? "dev.xueshi.macos-app-starter"
+    }
+
+    static var displayName: String {
+        // CFBundleDisplayName when set, falling back to CFBundleName, then the
+        // executable name. Matches what Finder shows in the app bundle title.
+        (Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String)
+            ?? (Bundle.main.infoDictionary?["CFBundleName"] as? String)
+            ?? "MacOSAppStarter"
     }
 }
