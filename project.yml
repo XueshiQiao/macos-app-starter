@@ -64,10 +64,14 @@ targets:
         # report a network error on Check for Updates, which is expected.
         SUFeedURL: "https://github.com/XueshiQiao/macos-app-starter/releases/latest/download/appcast.xml"
         # SUPublicEDKey: the public half of the ed25519 key pair generated with
-        # Sparkle's `generate_keys` tool. Ships as an obvious placeholder so
-        # `Check for Updates` does not crash; updates will fail signature
-        # verification until the real key is set.
-        SUPublicEDKey: "PLACEHOLDER_REPLACE_WITH_REAL_ED25519_PUBLIC_KEY"
+        # Sparkle's `generate_keys` tool. The matching private key is stored as
+        # the GitHub repo secret SPARKLE_ED_PRIVATE_KEY (used by CI's sign_update
+        # step). When forking, generate your own pair and replace this value:
+        #   ./bin/generate_keys --account <your-app-name>
+        #   ./bin/generate_keys --account <your-app-name> -x ./private.key
+        #   gh secret set SPARKLE_ED_PRIVATE_KEY --repo <owner>/<repo> < ./private.key
+        #   rm ./private.key
+        SUPublicEDKey: "dAF9J6eNXJsoSh3L62SZKcpyzHlS4YitByOWqEgiRZM="
         SUEnableAutomaticChecks: true
         # APTABASE_KEY: leave empty to disable; the Analytics wrapper checks for
         # an empty value and becomes a no-op.

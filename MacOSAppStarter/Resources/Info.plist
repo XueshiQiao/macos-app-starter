@@ -37,6 +37,6 @@
 	<key>SUFeedURL</key>
 	<string>https://github.com/XueshiQiao/macos-app-starter/releases/latest/download/appcast.xml</string>
 	<key>SUPublicEDKey</key>
-	<string>PLACEHOLDER_REPLACE_WITH_REAL_ED25519_PUBLIC_KEY</string>
+	<string>dAF9J6eNXJsoSh3L62SZKcpyzHlS4YitByOWqEgiRZM=</string>
 </dict>
 </plist>
