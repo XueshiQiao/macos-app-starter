@@ -49,6 +49,12 @@
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "返回" } }
       }
     },
+    "Built with macos-app-scaffold" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Built with macos-app-scaffold" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "由 macos-app-scaffold 构建" } }
+      }
+    },
     "Bundle ID" : {
       "localizations" : {
         "en" : { "stringUnit" : { "state" : "translated", "value" : "Bundle ID" } },

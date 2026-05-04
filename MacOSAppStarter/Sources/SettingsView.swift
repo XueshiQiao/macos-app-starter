@@ -65,15 +65,29 @@ struct SettingsView: View {
     }
 
     private var aboutTab: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: 10) {
             Image(systemName: "sparkles")
                 .font(.system(size: 48))
                 .foregroundStyle(.tint)
             Text("MacOSAppStarter").font(.title2.bold())
             Text(AppInfo.versionString).foregroundStyle(.secondary)
-            Link(String(localized: "View on GitHub"),
-                 destination: URL(string: "https://github.com/XueshiQiao/macos-app-starter")!)
+
+            VStack(spacing: 4) {
+                Link(String(localized: "View on GitHub"),
+                     destination: URL(string: "https://github.com/XueshiQiao/macos-app-starter")!)
+                Link(String(localized: "Built with macos-app-scaffold"),
+                     destination: URL(string: "https://github.com/XueshiQiao/macos-app-scaffold")!)
+            }
+
             Spacer()
+
+            HStack(spacing: 4) {
+                Text("© 2026")
+                Link("xueshi.dev",
+                     destination: URL(string: "https://xueshi.dev")!)
+            }
+            .font(.caption)
+            .foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding()

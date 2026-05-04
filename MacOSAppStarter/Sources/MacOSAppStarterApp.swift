@@ -20,7 +20,10 @@ struct MacOSAppStarterApp: App {
     }
 
     var body: some Scene {
-        WindowGroup(id: "main") {
+        // Single-window scene: openWindow(id: "main") brings the existing window
+        // forward instead of creating a new one each click. WindowGroup would
+        // spawn duplicates because group scenes are multi-window by design.
+        Window("MacOSAppStarter", id: "main") {
             ContentView()
                 .environmentObject(localization)
                 .environmentObject(updater)
@@ -43,6 +46,52 @@ struct MacOSAppStarterApp: App {
                 .environmentObject(updater)
                 .id(localization.languageCode)
         }
+
+        MenuBarExtra {
+            MenuBarMenu()
+                .environmentObject(localization)
+                .environmentObject(updater)
+        } label: {
+            Image(systemName: "sparkles")
+        }
+        .menuBarExtraStyle(.menu)
+    }
+}
+
+// Lives at the App-scene level so @Environment(\.openSettings) and
+// @Environment(\.openWindow) propagate. The previous NSStatusItem + NSPopover
+// implementation hosted these buttons via NSHostingController outside the
+// scene tree, so the env values resolved to no-op closures and clicks fell on
+// the floor.
+struct MenuBarMenu: View {
+    @EnvironmentObject private var updater: UpdateManager
+    @Environment(\.openSettings) private var openSettings
+    @Environment(\.openWindow) private var openWindow
+
+    var body: some View {
+        Button(String(localized: "Open Main Window")) {
+            NSApp.activate(ignoringOtherApps: true)
+            openWindow(id: "main")
+        }
+        .keyboardShortcut("o")
+
+        Button(String(localized: "Settings…")) {
+            NSApp.activate(ignoringOtherApps: true)
+            openSettings()
+        }
+        .keyboardShortcut(",")
+
+        Button(String(localized: "Check for Updates…")) {
+            updater.checkForUpdates()
+        }
+        .disabled(!updater.canCheckForUpdates)
+
+        Divider()
+
+        Button(String(localized: "Quit")) {
+            NSApp.terminate(nil)
+        }
+        .keyboardShortcut("q")
     }
 }
 
