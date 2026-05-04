@@ -151,19 +151,6 @@ jobs:
           xcrun stapler staple "build/Release/$APP_NAME.app"
           rm -f "$RUNNER_TEMP/notarize.zip"
 
-      - name: Sign Sparkle update
-        if: env.HAS_APPLE_SECRETS == 'true' && startsWith(github.ref, 'refs/tags/v')
-        env:
-          SPARKLE_ED_PRIVATE_KEY: ${{ secrets.SPARKLE_ED_PRIVATE_KEY }}
-        run: |
-          if [[ -z "$SPARKLE_ED_PRIVATE_KEY" ]]; then
-            echo "::warning::SPARKLE_ED_PRIVATE_KEY not set — skipping Sparkle signature."
-            exit 0
-          fi
-          # TODO: invoke Sparkle's sign_update tool here.
-          # Path is something like build/SourcePackages/artifacts/sparkle/Sparkle/bin/sign_update
-          echo "Sparkle signing placeholder — wire up once you ship a real release."
-
       - name: Create DMG
         if: env.HAS_APPLE_SECRETS == 'true'
         run: |
@@ -178,6 +165,63 @@ jobs:
             "$APP_NAME.dmg" \
             "build/Release/$APP_NAME.app" || true
 
+      # Sparkle appcast generation. Runs only on tag pushes — there's no point
+      # generating an appcast for non-release builds. Uploads `appcast.xml`
+      # alongside the DMG in the release so SUFeedURL
+      # (https://github.com/<owner>/<repo>/releases/latest/download/appcast.xml)
+      # always serves the freshest appcast.
+      - name: Download Sparkle tools
+        if: env.HAS_APPLE_SECRETS == 'true' && startsWith(github.ref, 'refs/tags/v')
+        run: |
+          SPARKLE_VERSION="2.6.4"
+          curl -sL -o "$RUNNER_TEMP/sparkle.tar.xz" \
+            "https://github.com/sparkle-project/Sparkle/releases/download/${SPARKLE_VERSION}/Sparkle-${SPARKLE_VERSION}.tar.xz"
+          mkdir -p "$RUNNER_TEMP/sparkle"
+          tar -xf "$RUNNER_TEMP/sparkle.tar.xz" -C "$RUNNER_TEMP/sparkle"
+
+      - name: Sign DMG and generate appcast
+        if: env.HAS_APPLE_SECRETS == 'true' && startsWith(github.ref, 'refs/tags/v')
+        env:
+          SPARKLE_ED_PRIVATE_KEY: ${{ secrets.SPARKLE_ED_PRIVATE_KEY }}
+        run: |
+          if [[ -z "$SPARKLE_ED_PRIVATE_KEY" ]]; then
+            echo "::warning::SPARKLE_ED_PRIVATE_KEY not set — release will go out without an appcast."
+            exit 0
+          fi
+
+          KEY_FILE="$RUNNER_TEMP/sparkle_eddsa.key"
+          echo -n "$SPARKLE_ED_PRIVATE_KEY" > "$KEY_FILE"
+          SIGN_OUTPUT=$("$RUNNER_TEMP/sparkle/bin/sign_update" "$APP_NAME.dmg" -f "$KEY_FILE")
+          rm -f "$KEY_FILE"
+
+          ED_SIGNATURE=$(echo "$SIGN_OUTPUT" | sed -n 's/.*sparkle:edSignature="\([^"]*\)".*/\1/p')
+          VERSION=$(grep MARKETING_VERSION project.yml | head -1 | awk -F'"' '{print $2}')
+          BUILD=$(grep CURRENT_PROJECT_VERSION project.yml | head -1 | awk -F'"' '{print $2}')
+          FILE_LENGTH=$(stat -f%z "$APP_NAME.dmg")
+          TAG="${GITHUB_REF_NAME}"
+          DOWNLOAD_URL="https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG}/${APP_NAME}.dmg"
+          PUB_DATE=$(date -u "+%a, %d %b %Y %H:%M:%S +0000")
+
+          {
+            echo '<?xml version="1.0" encoding="utf-8"?>'
+            echo '<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle">'
+            echo '  <channel>'
+            echo "    <title>${APP_NAME} Updates</title>"
+            echo "    <link>https://github.com/${GITHUB_REPOSITORY}</link>"
+            echo "    <description>Most recent updates to ${APP_NAME}</description>"
+            echo "    <language>en</language>"
+            echo '    <item>'
+            echo "      <title>Version ${VERSION}</title>"
+            echo "      <pubDate>${PUB_DATE}</pubDate>"
+            echo "      <sparkle:version>${BUILD}</sparkle:version>"
+            echo "      <sparkle:shortVersionString>${VERSION}</sparkle:shortVersionString>"
+            echo "      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>"
+            echo "      <enclosure url=\"${DOWNLOAD_URL}\" length=\"${FILE_LENGTH}\" type=\"application/octet-stream\" sparkle:edSignature=\"${ED_SIGNATURE}\" />"
+            echo '    </item>'
+            echo '  </channel>'
+            echo '</rss>'
+          } > appcast.xml
+
       - name: Upload artifact
         if: env.HAS_APPLE_SECRETS == 'true'
         uses: actions/upload-artifact@v4
@@ -189,5 +233,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v') && env.HAS_APPLE_SECRETS == 'true'
         uses: softprops/action-gh-release@v2
         with:
-          files: ${{ env.APP_NAME }}.dmg
+          files: |
+            ${{ env.APP_NAME }}.dmg
+            appcast.xml
           generate_release_notes: true

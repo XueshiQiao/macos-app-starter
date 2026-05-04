@@ -54,10 +54,15 @@ targets:
         NSHumanReadableCopyright: "Copyright © 2026 Xueshi Qiao. All rights reserved."
         NSAppleEventsUsageDescription: "MacOSAppStarter needs Apple Events to demonstrate Accessibility integration."
         # --- Sparkle ---
-        # SUFeedURL: replace this placeholder with the real appcast URL once you
-        # publish releases. A common host is GitHub Pages:
-        #   https://<owner>.github.io/<repo>/appcast.xml
-        SUFeedURL: "https://xueshiqiao.github.io/macos-app-starter/appcast.xml"
+        # SUFeedURL: hosted as a release asset. GitHub redirects
+        # `releases/latest/download/<asset>` to the asset on the most recent
+        # release, so Sparkle always reads the appcast that shipped with the
+        # latest version. The CI workflow uploads `appcast.xml` alongside the
+        # `.dmg` for every tagged release.
+        # When forking, change XueshiQiao/macos-app-starter to <your-owner>/<your-repo>.
+        # Until the first release ships, this URL returns 404 — Sparkle will
+        # report a network error on Check for Updates, which is expected.
+        SUFeedURL: "https://github.com/XueshiQiao/macos-app-starter/releases/latest/download/appcast.xml"
         # SUPublicEDKey: the public half of the ed25519 key pair generated with
         # Sparkle's `generate_keys` tool. Ships as an obvious placeholder so
         # `Check for Updates` does not crash; updates will fail signature

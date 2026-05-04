@@ -67,7 +67,7 @@ Required GitHub secrets for full release flow:
 - `MAC_CERTS_P12_BASE64`, `MAC_CERTS_P12_PASSWORD` — Developer ID cert
 - `APPLE_ID`, `APPLE_TEAM_ID`, `APP_SPECIFIC_PASSWORD` — notarytool
 - `SIGNING_IDENTITY` (optional, defaults to "Developer ID Application")
-- `SPARKLE_ED_PRIVATE_KEY` — Sparkle's ed25519 private key (base64); the public half goes in Info.plist as `SUPublicEDKey`
+- `SPARKLE_ED_PRIVATE_KEY` — Sparkle's ed25519 private key (full base64-encoded contents of the file `generate_keys` saves). The public half goes in `project.yml` under `info.properties.SUPublicEDKey`. The CI workflow uses this key in `sign_update` to produce the `sparkle:edSignature` attribute in the appcast. Without it, releases ship without an appcast and Check for Updates can't validate any update.
 - `HOMEBREW_TAP_TOKEN` — fine-grained PAT to push cask updates to your tap repo (only if you publish via Homebrew)
 
 Tag-triggered releases: `git tag v0.1.0 && git push --tags`.

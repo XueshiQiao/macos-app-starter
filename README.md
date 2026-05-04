@@ -67,7 +67,11 @@ xcodebuild -project MacOSAppStarter.xcodeproj -scheme MacOSAppStarter build
    - `APP_SPECIFIC_PASSWORD` — generated at appleid.apple.com
    - `SIGNING_IDENTITY` (optional)
 
-3. **Sparkle**. Generate ed25519 keys with Sparkle's `generate_keys` tool (built when you build the project — it's in `~/Library/Developer/Xcode/DerivedData/.../SourcePackages/artifacts/sparkle/Sparkle/bin/`). Put the public key in Info.plist as `SUPublicEDKey`. Add the private key to GitHub secrets as `SPARKLE_ED_PRIVATE_KEY`. Set `SUFeedURL` to your appcast URL.
+3. **Sparkle**. Generate ed25519 keys with Sparkle's `generate_keys` tool (built when you build the project — it's in `~/Library/Developer/Xcode/DerivedData/.../SourcePackages/artifacts/sparkle/Sparkle/bin/`). Put the public key in Info.plist as `SUPublicEDKey`. Add the private key to GitHub secrets as `SPARKLE_ED_PRIVATE_KEY`.
+
+   **SUFeedURL** is already set in `project.yml` (under `info.properties.SUFeedURL`) to `https://github.com/<owner>/<repo>/releases/latest/download/appcast.xml` — change `XueshiQiao/macos-app-starter` to your owner/repo when you fork. The CI workflow generates `appcast.xml` on every tagged release and uploads it as a release asset, so the `releases/latest/download/` redirect always serves the freshest appcast. No GitHub Pages, no separate repo, no manual upload.
+
+   Until you ship your first release, "Check for Updates" returns a 404 — Sparkle reports a network error, which is expected.
 
 4. **Aptabase** (optional). Create a free project at aptabase.com, put the key in Info.plist as `APTABASE_KEY`. Without it, analytics calls are no-ops.
 

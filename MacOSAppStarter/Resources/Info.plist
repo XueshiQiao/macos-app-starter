@@ -35,7 +35,7 @@
 	<key>SUEnableAutomaticChecks</key>
 	<true/>
 	<key>SUFeedURL</key>
-	<string>https://xueshiqiao.github.io/macos-app-starter/appcast.xml</string>
+	<string>https://github.com/XueshiQiao/macos-app-starter/releases/latest/download/appcast.xml</string>
 	<key>SUPublicEDKey</key>
 	<string>PLACEHOLDER_REPLACE_WITH_REAL_ED25519_PUBLIC_KEY</string>
 </dict>
