@@ -95,12 +95,21 @@ jobs:
         if: env.HAS_APPLE_SECRETS == 'true'
         env:
           SIGNING_IDENTITY: ${{ secrets.SIGNING_IDENTITY || 'Developer ID Application' }}
+          TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         run: |
+          # Override CODE_SIGN_STYLE=Manual + pass DEVELOPMENT_TEAM from the
+          # secret so SPM package targets (Aptabase/KeyboardShortcuts/Sparkle)
+          # don't bail with "Signing for X requires a development team" — that
+          # error happens with the default Automatic style when no team is
+          # in project.yml. The template intentionally ships with an empty
+          # DEVELOPMENT_TEAM so no one's team ID leaks in the public template.
           xcodebuild -project $APP_NAME.xcodeproj \
             -scheme $SCHEME \
             -configuration Release \
             ARCHS="arm64 x86_64" \
             ONLY_ACTIVE_ARCH=NO \
+            CODE_SIGN_STYLE=Manual \
+            DEVELOPMENT_TEAM="$TEAM_ID" \
             CODE_SIGN_IDENTITY="$SIGNING_IDENTITY" \
             CODE_SIGNING_REQUIRED=YES \
             CODE_SIGNING_ALLOWED=YES \
