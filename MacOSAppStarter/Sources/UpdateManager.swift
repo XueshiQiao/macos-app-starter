@@ -3,15 +3,15 @@ import Sparkle
 
 // Sparkle integration via SPUStandardUpdaterController.
 //
-// Setup checklist before shipping:
-// 1. Generate an ed25519 key pair with Sparkle's `generate_keys` tool.
-// 2. Put the public half (a base64 string) into Info.plist under SUPublicEDKey.
-//    SUPublicEDKey is added in project.yml's INFOPLIST_KEY_*; replace the placeholder.
-// 3. Set SUFeedURL in Info.plist (or via INFOPLIST_KEY_SUFeedURL) to the URL of your
-//    appcast.xml — typically hosted on GitHub Pages or a CDN.
-// 4. Keep the private key (sparkle_private_key) out of the repo. Add it to CI as
-//    a secret (SPARKLE_ED_PRIVATE_KEY) and use Sparkle's sign_update tool in your
-//    release workflow to sign each DMG.
+// Setup checklist before shipping (see README "Setup before you ship"):
+// 1. Regenerate the ed25519 keypair with Sparkle's `generate_keys` — the
+//    template's keypair is shared via this repo's secret, so forks MUST
+//    replace it.
+// 2. Put the public half into project.yml's `info.properties.SUPublicEDKey`.
+// 3. SUFeedURL is also in `info.properties` and points at the raw GitHub URL
+//    for `appcast.xml` on `main`. CI commits the appcast on every tagged release.
+// 4. Add the private key to CI as the `SPARKLE_EDDSA_KEY` repo secret. CI's
+//    `sign_update` step uses it to produce sparkle:edSignature for the appcast.
 @MainActor
 final class UpdateManager: ObservableObject {
     static let shared = UpdateManager()

@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>APTABASE_KEY</key>
-	<string></string>
+	<string>A-US-3800930688</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -35,7 +35,7 @@
 	<key>SUEnableAutomaticChecks</key>
 	<true/>
 	<key>SUFeedURL</key>
-	<string>https://github.com/XueshiQiao/macos-app-starter/releases/latest/download/appcast.xml</string>
+	<string>https://raw.githubusercontent.com/XueshiQiao/macos-app-starter/main/appcast.xml</string>
 	<key>SUPublicEDKey</key>
 	<string>dAF9J6eNXJsoSh3L62SZKcpyzHlS4YitByOWqEgiRZM=</string>
 </dict>

@@ -26,6 +26,7 @@ final class Analytics: @unchecked Sendable {
         }
         Aptabase.shared.initialize(appKey: key)
         initialized = true
+        FileLog.shared.info("Aptabase initialized (key: \(key.prefix(6))…)")
     }
 
     func setEnabled(_ value: Bool) {

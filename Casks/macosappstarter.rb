@@ -12,10 +12,10 @@ cask "macosappstarter" do
   desc "Production-ready macOS app scaffold demonstrating Sparkle, i18n, and CI/CD"
   homepage "https://github.com/XueshiQiao/macos-app-starter"
 
-  # When you ship Sparkle releases (CI uploads appcast.xml as a release asset),
+  # When you ship Sparkle releases (CI commits appcast.xml to main),
   # swap to the :sparkle strategy with the same URL Sparkle's SUFeedURL uses:
   #   livecheck do
-  #     url "https://github.com/XueshiQiao/macos-app-starter/releases/latest/download/appcast.xml"
+  #     url "https://raw.githubusercontent.com/XueshiQiao/macos-app-starter/main/appcast.xml"
   #     strategy :sparkle
   #   end
   livecheck do

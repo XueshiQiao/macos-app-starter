@@ -67,13 +67,30 @@ xcodebuild -project MacOSAppStarter.xcodeproj -scheme MacOSAppStarter build
    - `APP_SPECIFIC_PASSWORD` — generated at appleid.apple.com
    - `SIGNING_IDENTITY` (optional)
 
-3. **Sparkle**. Generate ed25519 keys with Sparkle's `generate_keys` tool (built when you build the project — it's in `~/Library/Developer/Xcode/DerivedData/.../SourcePackages/artifacts/sparkle/Sparkle/bin/`). Put the public key in Info.plist as `SUPublicEDKey`. Add the private key to GitHub secrets as `SPARKLE_ED_PRIVATE_KEY`.
+3. **Sparkle — REGENERATE THE KEYPAIR.** This template ships with `SUPublicEDKey` set to a throwaway key whose private half is stored as the `SPARKLE_EDDSA_KEY` secret in *this* repo. If you fork without regenerating, releases you sign won't validate against template users' apps, and (worse) anyone with this template's secret could forge updates that your users would accept.
 
-   **SUFeedURL** is already set in `project.yml` (under `info.properties.SUFeedURL`) to `https://github.com/<owner>/<repo>/releases/latest/download/appcast.xml` — change `XueshiQiao/macos-app-starter` to your owner/repo when you fork. The CI workflow generates `appcast.xml` on every tagged release and uploads it as a release asset, so the `releases/latest/download/` redirect always serves the freshest appcast. No GitHub Pages, no separate repo, no manual upload.
+   Regenerate before your first release:
 
-   Until you ship your first release, "Check for Updates" returns a 404 — Sparkle reports a network error, which is expected.
+   ```bash
+   # Build once so Sparkle's tools land in DerivedData:
+   xcodegen generate && xcodebuild -scheme MacOSAppStarter build
 
-4. **Aptabase** (optional). Create a free project at aptabase.com, put the key in Info.plist as `APTABASE_KEY`. Without it, analytics calls are no-ops.
+   SPARKLE_BIN=$(find ~/Library/Developer/Xcode/DerivedData -path "*sparkle/Sparkle/bin" -type d | head -1)
+
+   # Generate a fresh keypair scoped to your app (so it doesn't collide with
+   # other Sparkle apps in your keychain):
+   "$SPARKLE_BIN/generate_keys" --account <your-app-name>
+   # Copy the printed SUPublicEDKey value into project.yml's info.properties.
+
+   # Export the private key and set it as the GitHub secret:
+   "$SPARKLE_BIN/generate_keys" --account <your-app-name> -x ./private.key
+   gh secret set SPARKLE_EDDSA_KEY --repo <owner>/<repo> < ./private.key
+   rm ./private.key
+   ```
+
+   **SUFeedURL** is already set to `https://raw.githubusercontent.com/<owner>/<repo>/main/appcast.xml`. Change `XueshiQiao/macos-app-starter` to your owner/repo. CI generates `appcast.xml` on every tagged release and commits it back to `main` (with `[skip ci]`) so the raw URL always serves the latest appcast. No GitHub Pages, no separate repo. Until your first release ships, the URL returns 404 — Sparkle reports a clean network error, which is expected.
+
+4. **Aptabase — REPLACE THE KEY.** This template ships with `APTABASE_KEY: A-US-3800930688` so the maintainer can verify analytics flow during development. If you fork without changing it, your users' app-launch events will land in the maintainer's dashboard, not yours. Get a free key at aptabase.com and update `APTABASE_KEY` in `project.yml`. Set to empty string to disable analytics entirely.
 
 5. **Homebrew Cask**. The cask in `Casks/` is a draft. Move it to a tap repo (see `macos-app-scaffold` skill docs for tap topology choices) before publishing.
 

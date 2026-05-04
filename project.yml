@@ -54,15 +54,14 @@ targets:
         NSHumanReadableCopyright: "Copyright © 2026 Xueshi Qiao. All rights reserved."
         NSAppleEventsUsageDescription: "MacOSAppStarter needs Apple Events to demonstrate Accessibility integration."
         # --- Sparkle ---
-        # SUFeedURL: hosted as a release asset. GitHub redirects
-        # `releases/latest/download/<asset>` to the asset on the most recent
-        # release, so Sparkle always reads the appcast that shipped with the
-        # latest version. The CI workflow uploads `appcast.xml` alongside the
-        # `.dmg` for every tagged release.
+        # SUFeedURL: appcast.xml is committed to the repo root on `main` and
+        # served via GitHub's raw URL. CI generates and commits the appcast on
+        # every tagged release. This matches the pattern used by AnyDrag,
+        # PastePawX, HyperCapsLock, etc.
         # When forking, change XueshiQiao/macos-app-starter to <your-owner>/<your-repo>.
         # Until the first release ships, this URL returns 404 — Sparkle will
         # report a network error on Check for Updates, which is expected.
-        SUFeedURL: "https://github.com/XueshiQiao/macos-app-starter/releases/latest/download/appcast.xml"
+        SUFeedURL: "https://raw.githubusercontent.com/XueshiQiao/macos-app-starter/main/appcast.xml"
         # SUPublicEDKey: the public half of the ed25519 key pair generated with
         # Sparkle's `generate_keys` tool. The matching private key is stored as
         # the GitHub repo secret SPARKLE_ED_PRIVATE_KEY (used by CI's sign_update
@@ -73,9 +72,11 @@ targets:
         #   rm ./private.key
         SUPublicEDKey: "dAF9J6eNXJsoSh3L62SZKcpyzHlS4YitByOWqEgiRZM="
         SUEnableAutomaticChecks: true
-        # APTABASE_KEY: leave empty to disable; the Analytics wrapper checks for
-        # an empty value and becomes a no-op.
-        APTABASE_KEY: ""
+        # APTABASE_KEY: events flow to https://app.aptabase.com under this key.
+        # When forking, replace with your own (free at aptabase.com) — otherwise
+        # your usage events go to the original maintainer's dashboard.
+        # Empty string disables the Analytics wrapper entirely.
+        APTABASE_KEY: "A-US-3800930688"
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: dev.xueshi.macos-app-starter

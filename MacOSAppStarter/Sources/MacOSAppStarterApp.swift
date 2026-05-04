@@ -8,8 +8,10 @@ struct MacOSAppStarterApp: App {
     @StateObject private var updater = UpdateManager.shared
 
     init() {
-        FileLog.shared.info("App launched. version=\(AppInfo.versionString)")
-        Analytics.shared.track("app_launched")
+        FileLog.shared.info("App started. version=\(AppInfo.versionString)")
+        Analytics.shared.track("app_started", properties: [
+            "version": AppInfo.versionString
+        ])
     }
 
     var body: some Scene {
