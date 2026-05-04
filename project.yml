@@ -13,7 +13,6 @@ settings:
   base:
     SWIFT_VERSION: "6.0"
     MACOSX_DEPLOYMENT_TARGET: "14.0"
-    GENERATE_INFOPLIST_FILE: YES
     LOCALIZATION_PREFERS_STRING_CATALOGS: YES
     SWIFT_EMIT_LOC_STRINGS: YES
     DEVELOPMENT_LANGUAGE: en
@@ -22,10 +21,6 @@ settings:
     CODE_SIGN_STYLE: Automatic
     DEVELOPMENT_TEAM: ""
     ENABLE_HARDENED_RUNTIME: YES
-    INFOPLIST_KEY_LSUIElement: NO
-    INFOPLIST_KEY_NSHumanReadableCopyright: "Copyright © 2026 Xueshi Qiao. All rights reserved."
-    INFOPLIST_KEY_CFBundleDisplayName: "$(CFBundleDisplayName)"
-    INFOPLIST_KEY_NSAppleEventsUsageDescription: "MacOSAppStarter needs Apple Events to demonstrate Accessibility integration."
 
 packages:
   Sparkle:
@@ -47,11 +42,37 @@ targets:
       - path: MacOSAppStarter/Sources
       - path: MacOSAppStarter/Assets.xcassets
       - path: MacOSAppStarter/Resources
+    info:
+      path: MacOSAppStarter/Resources/Info.plist
+      properties:
+        CFBundleDisplayName: MacOSAppStarter
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        LSMinimumSystemVersion: $(MACOSX_DEPLOYMENT_TARGET)
+        LSApplicationCategoryType: public.app-category.developer-tools
+        LSUIElement: false
+        NSHumanReadableCopyright: "Copyright © 2026 Xueshi Qiao. All rights reserved."
+        NSAppleEventsUsageDescription: "MacOSAppStarter needs Apple Events to demonstrate Accessibility integration."
+        # --- Sparkle ---
+        # SUFeedURL: replace this placeholder with the real appcast URL once you
+        # publish releases. A common host is GitHub Pages:
+        #   https://<owner>.github.io/<repo>/appcast.xml
+        SUFeedURL: "https://xueshiqiao.github.io/macos-app-starter/appcast.xml"
+        # SUPublicEDKey: the public half of the ed25519 key pair generated with
+        # Sparkle's `generate_keys` tool. Ships as an obvious placeholder so
+        # `Check for Updates` does not crash; updates will fail signature
+        # verification until the real key is set.
+        SUPublicEDKey: "PLACEHOLDER_REPLACE_WITH_REAL_ED25519_PUBLIC_KEY"
+        SUEnableAutomaticChecks: true
+        # APTABASE_KEY: leave empty to disable; the Analytics wrapper checks for
+        # an empty value and becomes a no-op.
+        APTABASE_KEY: ""
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: dev.xueshi.macos-app-starter
         PRODUCT_NAME: MacOSAppStarter
         CODE_SIGN_ENTITLEMENTS: MacOSAppStarter/Resources/MacOSAppStarter.entitlements
+        GENERATE_INFOPLIST_FILE: NO
     dependencies:
       - package: Sparkle
       - package: KeyboardShortcuts

@@ -1,0 +1,193 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  APP_NAME: MacOSAppStarter
+  SCHEME: MacOSAppStarter
+
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 30
+
+    steps:
+      - name: Detect Apple Developer secrets
+        id: detect
+        run: |
+          if [[ -n "${{ secrets.MAC_CERTS_P12_BASE64 }}" && -n "${{ secrets.APPLE_ID }}" ]]; then
+            echo "HAS_APPLE_SECRETS=true" >> $GITHUB_ENV
+          else
+            echo "HAS_APPLE_SECRETS=false" >> $GITHUB_ENV
+          fi
+
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode.app
+
+      - name: Install dependencies
+        run: brew install xcodegen create-dmg
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Build universal binary (unsigned)
+        if: env.HAS_APPLE_SECRETS == 'false'
+        run: |
+          xcodebuild -project $APP_NAME.xcodeproj \
+            -scheme $SCHEME \
+            -configuration Release \
+            ARCHS="arm64 x86_64" \
+            ONLY_ACTIVE_ARCH=NO \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            build \
+            SYMROOT=$(pwd)/build
+
+      - name: Run unit tests
+        run: |
+          xcodebuild -project $APP_NAME.xcodeproj \
+            -scheme $SCHEME \
+            -destination 'platform=macOS' \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            test
+
+      # ---- Apple Developer Account required below ----
+
+      - name: Import signing certificate
+        if: env.HAS_APPLE_SECRETS == 'true'
+        env:
+          P12_BASE64: ${{ secrets.MAC_CERTS_P12_BASE64 }}
+          P12_PASSWORD: ${{ secrets.MAC_CERTS_P12_PASSWORD }}
+        run: |
+          if [[ -z "$P12_BASE64" || -z "$P12_PASSWORD" ]]; then
+            echo "::error::MAC_CERTS_P12_BASE64 and MAC_CERTS_P12_PASSWORD must both be set."
+            exit 1
+          fi
+
+          CERT_PATH="$RUNNER_TEMP/signing-cert.p12"
+          KEYCHAIN_PATH="$RUNNER_TEMP/app-signing.keychain-db"
+          KEYCHAIN_PASSWORD=$(uuidgen)
+
+          echo "$P12_BASE64" | base64 --decode > "$CERT_PATH"
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security import "$CERT_PATH" -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+          security set-key-partition-list -S apple-tool:,apple: -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security list-keychain -d user -s "$KEYCHAIN_PATH"
+          rm -f "$CERT_PATH"
+
+      - name: Build signed
+        if: env.HAS_APPLE_SECRETS == 'true'
+        env:
+          SIGNING_IDENTITY: ${{ secrets.SIGNING_IDENTITY || 'Developer ID Application' }}
+        run: |
+          xcodebuild -project $APP_NAME.xcodeproj \
+            -scheme $SCHEME \
+            -configuration Release \
+            ARCHS="arm64 x86_64" \
+            ONLY_ACTIVE_ARCH=NO \
+            CODE_SIGN_IDENTITY="$SIGNING_IDENTITY" \
+            CODE_SIGNING_REQUIRED=YES \
+            CODE_SIGNING_ALLOWED=YES \
+            build \
+            SYMROOT=$(pwd)/build
+
+          APP_PATH="build/Release/$APP_NAME.app"
+          ENTITLEMENTS="MacOSAppStarter/Resources/MacOSAppStarter.entitlements"
+
+          # Inside-out signing of embedded code (Sparkle XPC services etc.)
+          if [ -d "$APP_PATH/Contents/Frameworks" ]; then
+            find "$APP_PATH/Contents/Frameworks" -type f | while read -r f; do
+              if file "$f" | grep -q "Mach-O"; then
+                codesign --force --options runtime --timestamp \
+                  --sign "$SIGNING_IDENTITY" "$f"
+              fi
+            done
+            find "$APP_PATH/Contents/Frameworks" -name "*.xpc" -type d | while read -r b; do
+              codesign --force --options runtime --timestamp \
+                --sign "$SIGNING_IDENTITY" "$b"
+            done
+            find "$APP_PATH/Contents/Frameworks" -name "*.app" -type d | while read -r b; do
+              codesign --force --options runtime --timestamp \
+                --sign "$SIGNING_IDENTITY" "$b"
+            done
+            find "$APP_PATH/Contents/Frameworks" \( -name "*.framework" -o -name "*.dylib" \) | while read -r b; do
+              codesign --force --options runtime --timestamp \
+                --sign "$SIGNING_IDENTITY" "$b"
+            done
+          fi
+
+          codesign --force --options runtime --timestamp \
+            --entitlements "$ENTITLEMENTS" \
+            --sign "$SIGNING_IDENTITY" "$APP_PATH"
+          codesign --verify --deep --strict --verbose=2 "$APP_PATH"
+
+      - name: Notarize app
+        if: env.HAS_APPLE_SECRETS == 'true'
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          APP_PASSWORD: ${{ secrets.APP_SPECIFIC_PASSWORD }}
+        run: |
+          if [[ -z "$APPLE_ID" || -z "$APP_PASSWORD" || -z "$TEAM_ID" ]]; then
+            echo "::error::Missing notarization secrets."
+            exit 1
+          fi
+          ditto -c -k --keepParent "build/Release/$APP_NAME.app" "$RUNNER_TEMP/notarize.zip"
+          xcrun notarytool submit "$RUNNER_TEMP/notarize.zip" \
+            --apple-id "$APPLE_ID" --team-id "$TEAM_ID" --password "$APP_PASSWORD" --wait
+          xcrun stapler staple "build/Release/$APP_NAME.app"
+          rm -f "$RUNNER_TEMP/notarize.zip"
+
+      - name: Sign Sparkle update
+        if: env.HAS_APPLE_SECRETS == 'true' && startsWith(github.ref, 'refs/tags/v')
+        env:
+          SPARKLE_ED_PRIVATE_KEY: ${{ secrets.SPARKLE_ED_PRIVATE_KEY }}
+        run: |
+          if [[ -z "$SPARKLE_ED_PRIVATE_KEY" ]]; then
+            echo "::warning::SPARKLE_ED_PRIVATE_KEY not set — skipping Sparkle signature."
+            exit 0
+          fi
+          # TODO: invoke Sparkle's sign_update tool here.
+          # Path is something like build/SourcePackages/artifacts/sparkle/Sparkle/bin/sign_update
+          echo "Sparkle signing placeholder — wire up once you ship a real release."
+
+      - name: Create DMG
+        if: env.HAS_APPLE_SECRETS == 'true'
+        run: |
+          create-dmg \
+            --volname "$APP_NAME" \
+            --window-pos 200 120 \
+            --window-size 600 400 \
+            --icon-size 100 \
+            --icon "$APP_NAME.app" 150 190 \
+            --hide-extension "$APP_NAME.app" \
+            --app-drop-link 450 190 \
+            "$APP_NAME.dmg" \
+            "build/Release/$APP_NAME.app" || true
+
+      - name: Upload artifact
+        if: env.HAS_APPLE_SECRETS == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.APP_NAME }}-dmg
+          path: ${{ env.APP_NAME }}.dmg
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v') && env.HAS_APPLE_SECRETS == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ env.APP_NAME }}.dmg
+          generate_release_notes: true

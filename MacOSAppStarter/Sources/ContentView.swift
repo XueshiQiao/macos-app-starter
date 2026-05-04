@@ -4,6 +4,7 @@ struct ContentView: View {
     @EnvironmentObject private var localization: LocalizationManager
     @EnvironmentObject private var updater: UpdateManager
     @StateObject private var accessibility = AccessibilityChecker.shared
+    @Environment(\.openSettings) private var openSettings
 
     var body: some View {
         VStack(spacing: 16) {
@@ -39,7 +40,8 @@ struct ContentView: View {
 
             HStack(spacing: 8) {
                 Button(String(localized: "Open Settings…")) {
-                    NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
+                    NSApp.activate(ignoringOtherApps: true)
+                    openSettings()
                 }
                 Button(String(localized: "Check for Updates…")) {
                     updater.checkForUpdates()
@@ -78,16 +80,12 @@ struct MenuBarPopoverView: View {
             Divider()
 
             Button(String(localized: "Open Main Window")) {
-                NSApp.activate(ignoringOtherApps: true)
-                for window in NSApp.windows where window.canBecomeKey {
-                    window.makeKeyAndOrderFront(nil)
-                    return
-                }
+                (NSApp.delegate as? AppDelegate)?.bringMainWindowForward()
             }
             .buttonStyle(.link)
 
             Button(String(localized: "Settings…")) {
-                NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
+                (NSApp.delegate as? AppDelegate)?.openSettings()
             }
             .buttonStyle(.link)
 

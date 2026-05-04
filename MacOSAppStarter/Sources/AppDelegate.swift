@@ -55,15 +55,35 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    private func bringMainWindowForward() {
+    func bringMainWindowForward() {
+        popover?.performClose(nil)
         NSApp.activate(ignoringOtherApps: true)
-        for window in NSApp.windows where window.identifier?.rawValue.contains("main") == true {
+        // SwiftUI WindowGroup windows are hidden, not destroyed, when closed.
+        // Show the first non-popover, non-settings window we find.
+        for window in NSApp.windows {
+            let title = window.title
+            let isPopover = window.className.contains("PopoverWindow")
+            let isPanel = window is NSPanel
+            guard !isPopover, !isPanel,
+                  title != String(localized: "Settings"),
+                  title != String(localized: "Welcome to MacOSAppStarter") else { continue }
             window.makeKeyAndOrderFront(nil)
             return
         }
-        // No window currently — open one.
-        if let url = URL(string: "macosappstarter://open") {
-            NSWorkspace.shared.open(url)
+        // Fallback: trigger applicationShouldHandleReopen by unhiding.
+        NSApp.unhide(nil)
+    }
+
+    // Opens the SwiftUI Settings scene. Activation + async dispatch are needed
+    // because callers from the menu bar popover lose key window during dismissal,
+    // and `showSettingsWindow:` needs the responder chain to be settled first.
+    func openSettings() {
+        popover?.performClose(nil)
+        NSApp.activate(ignoringOtherApps: true)
+        DispatchQueue.main.async {
+            // macOS 13+: SwiftUI's Settings scene listens for showSettingsWindow:.
+            // Send to nil so it travels the responder chain and reaches NSApp.
+            NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
         }
     }
 
